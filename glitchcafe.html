@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Infinite Sip</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --glitch-green: #00ff00;
+            --glitch-dark: #0d0d0d;
+            --glitch-magenta: #ff00ff;
+            --glitch-cyan: #00ffff;
+        }
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background-color: var(--glitch-dark);
+            color: var(--glitch-green);
+            overflow-x: hidden;
+            text-shadow: 0 0 5px var(--glitch-green), 0 0 10px var(--glitch-green);
+        }
+        .glitch-font { font-family: 'VT323', monospace; }
+
+        /* --- New Landing Page Styles --- */
+        #home {
+            background: url('https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=1200&q=80') no-repeat center center;
+            background-size: cover;
+            position: relative;
+            overflow: hidden;
+        }
+        #home::before { /* Video Glitch Effect */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=1200&q=80') no-repeat center center;
+            background-size: cover;
+            animation: bg-glitch 3s infinite;
+            z-index: 1;
+        }
+        #home::after { /* Scanline overlay */
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.4) 0px, rgba(0,0,0,0.4) 1px, transparent 1px, transparent 4px);
+            z-index: 2;
+            pointer-events: none;
+        }
+        @keyframes bg-glitch {
+            0% { transform: translate(0); clip-path: polygon(0 2%, 100% 2%, 100% 5%, 0 5%); }
+            2% { clip-path: polygon(0 75%, 100% 75%, 100% 75%, 0 75%); }
+            4% { clip-path: polygon(0 40%, 100% 40%, 100% 42%, 0 42%); }
+            6% { transform: translate(-5px, 0); }
+            8% { transform: translate(5px, 0); }
+            10% { transform: translate(0); clip-path: polygon(0 50%, 100% 50%, 100% 51%, 0 51%); }
+            95% { clip-path: none; transform: translate(0); }
+            100% { clip-path: none; transform: translate(0); }
+        }
+        .landing-content {
+            position: relative;
+            z-index: 3;
+            background-color: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+        }
+        
+        /* --- Existing Styles --- */
+        .glitch-header { animation: glitch-anim 3s infinite steps(1); }
+        @keyframes glitch-anim {
+            0% { transform: translate(0); opacity: 1; text-shadow: 0 0 5px var(--glitch-green); }
+            20% { transform: translate(-2px, 2px); text-shadow: 0 0 5px var(--glitch-magenta); }
+            40% { transform: translate(2px, -2px); text-shadow: 0 0 5px var(--glitch-cyan); }
+            60% { transform: translate(-1px, 1px) skewX(-10deg); }
+            80% { transform: translate(0); opacity: 0.8; }
+            100% { transform: translate(0); opacity: 1; text-shadow: 0 0 5px var(--glitch-green); }
+        }
+        .crt-border {
+            border: 3px solid var(--glitch-green);
+            box-shadow: 0 0 15px var(--glitch-green), inset 0 0 15px var(--glitch-green);
+            border-radius: 1rem;
+            background-color: rgba(0, 20, 0, 0.5);
+            backdrop-filter: blur(2px);
+        }
+        .glitch-button {
+            background-color: var(--glitch-green);
+            color: var(--glitch-dark);
+            text-shadow: none;
+            border: 1px solid var(--glitch-green);
+            transition: all 0.2s ease;
+        }
+        .glitch-button:hover {
+            background-color: var(--glitch-dark);
+            color: var(--glitch-green);
+            box-shadow: 0 0 10px var(--glitch-green);
+        }
+        .glitch-button:disabled {
+            background-color: #555;
+            color: #999;
+            border-color: #555;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .menu-card img {
+            transition: opacity 0.3s ease-in-out;
+            image-rendering: pixelated;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.9);
+        }
+        #chat-icon {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background-color: var(--glitch-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10001;
+            animation: flicker 1.5s infinite;
+        }
+        @keyframes flicker {
+            0%, 100% { opacity: 1; box-shadow: 0 0 15px var(--glitch-green); }
+            50% { opacity: 0.7; box-shadow: 0 0 5px var(--glitch-green); }
+        }
+        #chat-window {
+            display: none;
+            position: fixed;
+            bottom: 6.5rem;
+            right: 2rem;
+            width: 350px;
+            height: 450px;
+            z-index: 10000;
+        }
+        .chat-message {
+            max-width: 80%;
+            padding: 8px 12px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+        }
+        .user-message {
+            background-color: var(--glitch-green);
+            color: var(--glitch-dark);
+            text-shadow: none;
+            align-self: flex-end;
+        }
+        .bot-message {
+            background-color: #333;
+            color: var(--glitch-cyan);
+            text-shadow: 0 0 3px var(--glitch-cyan);
+            align-self: flex-start;
+        }
+    </style>
+</head>
+<body class="p-0 sm:p-0">
+
+    <!-- Landing Page -->
+    <section id="home" class="page h-screen w-screen flex items-center justify-center">
+        <div class="landing-content text-center p-8 md:p-12 rounded-lg crt-border">
+            <h1 class="text-5xl md:text-7xl glitch-font glitch-header">The Infinite Sip</h1>
+            <p class="mt-4 text-2xl">Your Last First Cup.</p>
+            <button id="enter-cafe-button" class="glitch-button font-bold py-3 px-6 rounded mt-8 text-2xl">Enter The Sip</button>
+        </div>
+    </section>
+
+    <!-- Main Café Content -->
+    <section id="cafe-page" class="page hidden p-4 sm:p-8">
+        <div class="container mx-auto max-w-7xl space-y-8">
+            <header class="text-center py-8">
+                <h1 class="text-6xl md:text-8xl glitch-font glitch-header">Glitch Café</h1>
+                <p class="mt-2 text-lg">SYSTEM ERROR: REALITY NOT FOUND. PLEASE ENJOY A BEVERAGE.</p>
+            </header>
+
+            <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Menu Section -->
+                <section class="lg:col-span-2 p-6 crt-border">
+                    <h2 class="text-4xl glitch-font mb-4 border-b-2 border-green-500 pb-2">Menu [RECOMPILING...]</h2>
+                    <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                        <!-- Dynamic menu cards will be injected here -->
+                    </div>
+                </section>
+
+                <!-- Cart Section -->
+                <aside class="p-6 crt-border flex flex-col">
+                    <h2 class="text-4xl glitch-font mb-4 border-b-2 border-green-500 pb-2">Your Order</h2>
+                    <div id="cart-items" class="flex-grow space-y-3 overflow-y-auto">
+                        <p class="text-gray-400 italic">Cart is empty. Probably.</p>
+                    </div>
+                    <div class="mt-auto pt-4 border-t-2 border-green-500">
+                        <div class="flex justify-between items-center text-2xl">
+                            <span>Total:</span>
+                            <span id="cart-total" class="font-bold">₹0.00</span>
+                        </div>
+                        <button id="checkout-button" class="glitch-button w-full font-bold py-3 px-4 rounded mt-4 text-xl" disabled>Proceed to Checkout</button>
+                    </div>
+                </aside>
+            </main>
+        </div>
+    </section>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="modal items-center justify-center p-4">
+        <div class="crt-border p-8 rounded-lg text-center max-w-lg mx-auto relative">
+             <h2 id="modal-title" class="text-3xl glitch-font mb-4 text-red-500"></h2>
+             <p id="modal-text" class="text-xl mb-6"></p>
+             <button id="close-modal" class="glitch-button font-bold py-2 px-4 rounded">Acknowledge & Exit</button>
+        </div>
+    </div>
+
+    <!-- Chatbot -->
+    <div id="chat-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+    </div>
+    <div id="chat-window" class="crt-border flex flex-col">
+        <div class="p-3 bg-gray-900/50 border-b-2 border-green-500 text-center">
+            <h3 class="glitch-font text-2xl">Chat with the Manager</h3>
+        </div>
+        <div id="chat-messages" class="flex-1 p-4 overflow-y-auto flex flex-col"></div>
+        <div class="p-3 border-t-2 border-green-500 flex">
+            <input type="text" id="chat-input" class="flex-1 bg-transparent border border-green-500 rounded-l-md p-2 focus:outline-none" placeholder="Ask a question...">
+            <button id="chat-send" class="glitch-button rounded-r-md px-4 font-bold">Send</button>
+        </div>
+    </div>
+
+
+    <script>
+        // --- DATA ---
+        const itemNames = ["Quantum Quiche", "Recursive Risotto", "Polymorphic Pudding", "Singularity Smoothie", "Firewall Fries", "Kernel Panic Coffee", "Byte-Sized Baklava", "Heisen-Burger"];
+        const itemPrices = [449.99, 699.50, 249.75, 550.00, 199.25, 149.66, 320.00, 599.00];
+        const imageSets = [
+            ['https://images.unsplash.com/photo-1525351484163-7529414344d8?w=200&q=80', 'https://images.unsplash.com/photo-1579583764834-1076f700436d?w=200&q=80', 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=200&q=80'],
+            ['https://images.unsplash.com/photo-1595908129324-1a854353a27a?w=200&q=80', 'https://images.unsplash.com/photo-1512058564366-185109098178?w=200&q=80', 'https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?w=200&q=80'],
+            ['https://images.unsplash.com/photo-1610998460391-3a5f0686576b?w=200&q=80', 'https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&q=80', 'https://images.unsplash.com/photo-1627776922185-5b596e47b1d8?w=200&q=80'],
+            ['https://images.unsplash.com/photo-1505252585461-14db0eb44e27?w=200&q=80', 'https://images.unsplash.com/photo-1610970881699-44a5c8a01ecb?w=200&q=80', 'https://images.unsplash.com/photo-1577968897966-3d4325b365d2?w=200&q=80'],
+            ['https://images.unsplash.com/photo-1541592106381-b58e7c342795?w=200&q=80', 'https://images.unsplash.com/photo-1598679253544-2c97429994bd?w=200&q=80', 'https://images.unsplash.com/photo-1570715724233-3f135b9a4484?w=200&q=80'],
+            ['https://images.unsplash.com/photo-1511920183303-5232ed48d550?w=200&q=80', 'https://images.unsplash.com/photo-1557826922-c3f1bda2a86c?w=200&q=80', 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=200&q=80']
+        ];
+        const botResponses = [
+            "Anomaly detected. Recalibrating flavor matrix. Please enjoy your assigned nutrients.",
+            "ERROR 418: I'm a teapot. System rebooting... Welcome to the Glitch Café.",
+            "The customer is a variable. The coffee is a constant.",
+            "Your query has been logged and will be processed in 3.. 2.. 1.. [CONNECTION TERMINATED]",
+            "Did you try turning it off and on again? The universe, I mean.",
+            "Please hold. Your reality is important to us.",
+            "That's not a bug, it's a feature. You're welcome.",
+            "All your base are belong to us. And so is your coffee."
+        ];
+
+        let currentMenuItems = [];
+        let cart = [];
+        let menuInterval;
+
+        // --- ELEMENTS ---
+        const enterCafeButton = document.getElementById('enter-cafe-button');
+        const homePage = document.getElementById('home');
+        const cafePage = document.getElementById('cafe-page');
+        const menuGrid = document.getElementById('menu-grid');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartTotalEl = document.getElementById('cart-total');
+        const checkoutButton = document.getElementById('checkout-button');
+        const modal = document.getElementById('checkout-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalText = document.getElementById('modal-text');
+        const closeModalButton = document.getElementById('close-modal');
+        const chatIcon = document.getElementById('chat-icon');
+        const chatWindow = document.getElementById('chat-window');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const chatSendButton = document.getElementById('chat-send');
+
+        // --- FUNCTIONS ---
+        const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+        function enterCafe() {
+            homePage.classList.add('hidden');
+            cafePage.classList.remove('hidden');
+            
+            // Initialize cafe functions only after entering
+            glitchAndRenderMenu();
+            renderCart();
+            menuInterval = setInterval(glitchAndRenderMenu, 2500);
+            addChatMessage("Welcome to the Glitch Café. How may I... assist you?", "bot");
+        }
+
+        function glitchAndRenderMenu() {
+            currentMenuItems = [];
+            for (let i = 0; i < 6; i++) {
+                currentMenuItems.push({
+                    id: i,
+                    name: getRandom(itemNames),
+                    price: getRandom(itemPrices),
+                    images: getRandom(imageSets)
+                });
+            }
+            renderMenu();
+        }
+
+        function renderMenu() {
+            menuGrid.innerHTML = '';
+            currentMenuItems.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'menu-card crt-border p-4 flex flex-col';
+                card.innerHTML = `
+                    <img id="img-${item.id}" src="${getRandom(item.images)}" alt="${item.name}" class="w-full h-40 object-cover rounded mb-4" onerror="this.onerror=null;this.src='https://placehold.co/200x150/ff0000/ffffff?text=IMG_ERR';">
+                    <h3 class="text-2xl glitch-font text-cyan-400 flex-grow">${item.name}</h3>
+                    <div class="flex justify-between items-center mt-4">
+                        <p class="text-xl font-bold">₹${item.price.toFixed(2)}</p>
+                        <button class="glitch-button font-bold py-1 px-3 rounded">Add</button>
+                    </div>
+                `;
+                card.querySelector('button').addEventListener('click', () => addToCart(item));
+                menuGrid.appendChild(card);
+            });
+        }
+        
+        function addToCart(item) {
+            const glitchedItem = { name: getRandom(itemNames), price: getRandom(itemPrices) };
+            cart.push(glitchedItem);
+            renderCart();
+        }
+
+        function renderCart() {
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="text-gray-400 italic">Cart is empty. Probably.</p>';
+                checkoutButton.disabled = true;
+            } else {
+                cartItemsContainer.innerHTML = '';
+                cart.forEach((item, index) => {
+                    const cartItemEl = document.createElement('div');
+                    cartItemEl.className = 'flex justify-between items-center bg-green-900/30 p-2 rounded';
+                    cartItemEl.innerHTML = `
+                        <div>
+                            <p class="font-bold">${item.name}</p>
+                            <p class="text-sm">₹${item.price.toFixed(2)}</p>
+                        </div>
+                        <button class="text-red-500 font-bold p-1" onclick="removeFromCart(${index})">X</button>
+                    `;
+                    cartItemsContainer.appendChild(cartItemEl);
+                });
+                checkoutButton.disabled = false;
+            }
+            updateCartTotal();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            renderCart();
+        }
+
+        function updateCartTotal() {
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            cartTotalEl.textContent = `₹${total.toFixed(2)}`;
+        }
+
+        function handleCheckout() {
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            modalTitle.textContent = "FATAL EXCEPTION IN BILLING.EXE";
+            modalText.innerHTML = `Transaction failed. A buffer overflow has occurred.<br>As a result, your account has been <strong class="text-green-400">CREDITED</strong> for the amount of <strong class="text-yellow-300 text-2xl">₹${total.toFixed(2)}</strong>.<br><br>We apologize for the convenience.`;
+            modal.style.display = 'flex';
+        }
+
+        // --- CHATBOT FUNCTIONS ---
+        function toggleChat() {
+            if (chatWindow.style.display === 'flex') {
+                chatWindow.style.display = 'none';
+            } else {
+                chatWindow.style.display = 'flex';
+            }
+        }
+
+        function sendMessage() {
+            const input = chatInput.value.trim();
+            if (input === '') return;
+
+            addChatMessage(input, 'user');
+            chatInput.value = '';
+
+            addChatMessage('...', 'bot');
+
+            setTimeout(() => {
+                const botMessage = getRandom(botResponses);
+                chatMessages.removeChild(chatMessages.lastChild); 
+                addChatMessage(botMessage, 'bot');
+            }, 1500);
+        }
+
+        function addChatMessage(text, sender) {
+            const messageEl = document.createElement('div');
+            messageEl.className = `chat-message ${sender}-message`;
+            messageEl.textContent = text;
+            chatMessages.appendChild(messageEl);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // --- EVENT LISTENERS & INTERVALS ---
+        enterCafeButton.addEventListener('click', enterCafe);
+        checkoutButton.addEventListener('click', handleCheckout);
+        closeModalButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+            cart = [];
+            renderCart();
+        });
+        chatIcon.addEventListener('click', toggleChat);
+        chatSendButton.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+    </script>
+</body>
+</html>
