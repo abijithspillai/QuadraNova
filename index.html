@@ -21,17 +21,18 @@
             color: var(--glitch-green);
             overflow-x: hidden;
             text-shadow: 0 0 5px var(--glitch-green), 0 0 10px var(--glitch-green);
+            transition: transform 0.5s ease, filter 0.5s ease;
         }
         .glitch-font { font-family: 'VT323', monospace; }
 
-        /* --- New Landing Page Styles --- */
+        /* --- Landing Page Styles --- */
         #home {
             background: url('https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=1200&q=80') no-repeat center center;
             background-size: cover;
             position: relative;
             overflow: hidden;
         }
-        #home::before { /* Video Glitch Effect */
+        #home::before {
             content: '';
             position: absolute;
             top: 0;
@@ -43,7 +44,7 @@
             animation: bg-glitch 3s infinite;
             z-index: 1;
         }
-        #home::after { /* Scanline overlay */
+        #home::after {
             content: " ";
             display: block;
             position: absolute;
@@ -72,7 +73,7 @@
             backdrop-filter: blur(4px);
         }
         
-        /* --- Existing Styles --- */
+        /* --- Main App Styles --- */
         .glitch-header { animation: glitch-anim 3s infinite steps(1); }
         @keyframes glitch-anim {
             0% { transform: translate(0); opacity: 1; text-shadow: 0 0 5px var(--glitch-green); }
@@ -101,6 +102,15 @@
             color: var(--glitch-green);
             box-shadow: 0 0 10px var(--glitch-green);
         }
+        .glitch-button.special {
+            background-color: var(--glitch-magenta);
+            border-color: var(--glitch-magenta);
+            animation: pulse-special 1s infinite;
+        }
+        @keyframes pulse-special {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 10px var(--glitch-magenta); }
+            50% { transform: scale(1.05); box-shadow: 0 0 20px var(--glitch-magenta); }
+        }
         .glitch-button:disabled {
             background-color: #555;
             color: #999;
@@ -113,61 +123,40 @@
             image-rendering: pixelated;
         }
         .modal {
-            display: none;
-            position: fixed;
-            z-index: 10000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.9);
+            display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.9);
         }
         #chat-icon {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 60px;
-            height: 60px;
-            background-color: var(--glitch-green);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10001;
-            animation: flicker 1.5s infinite;
+            position: fixed; bottom: 2rem; right: 2rem; width: 60px; height: 60px; background-color: var(--glitch-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10001; animation: flicker 1.5s infinite;
         }
         @keyframes flicker {
             0%, 100% { opacity: 1; box-shadow: 0 0 15px var(--glitch-green); }
             50% { opacity: 0.7; box-shadow: 0 0 5px var(--glitch-green); }
         }
         #chat-window {
-            display: none;
-            position: fixed;
-            bottom: 6.5rem;
-            right: 2rem;
-            width: 350px;
-            height: 450px;
-            z-index: 10000;
+            display: none; position: fixed; bottom: 6.5rem; right: 2rem; width: 350px; height: 450px; z-index: 10000;
         }
-        .chat-message {
-            max-width: 80%;
-            padding: 8px 12px;
-            border-radius: 10px;
-            margin-bottom: 8px;
+        .chat-message { max-width: 80%; padding: 8px 12px; border-radius: 10px; margin-bottom: 8px; }
+        .user-message { background-color: var(--glitch-green); color: var(--glitch-dark); text-shadow: none; align-self: flex-end; }
+        .bot-message { background-color: #333; color: var(--glitch-cyan); text-shadow: 0 0 3px var(--glitch-cyan); align-self: flex-start; }
+
+        /* --- Page-Wide Glitch Effects --- */
+        .page-flip { transform: rotate(180deg); }
+        .page-invert { filter: invert(1); }
+
+        /* --- Reviews Ticker --- */
+        #reviews-ticker {
+            overflow: hidden;
+            white-space: nowrap;
+            box-sizing: border-box;
         }
-        .user-message {
-            background-color: var(--glitch-green);
-            color: var(--glitch-dark);
-            text-shadow: none;
-            align-self: flex-end;
+        #reviews-ticker p {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 45s linear infinite;
         }
-        .bot-message {
-            background-color: #333;
-            color: var(--glitch-cyan);
-            text-shadow: 0 0 3px var(--glitch-cyan);
-            align-self: flex-start;
+        @keyframes marquee {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
         }
     </style>
 </head>
@@ -191,15 +180,10 @@
             </header>
 
             <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Menu Section -->
                 <section class="lg:col-span-2 p-6 crt-border">
                     <h2 class="text-4xl glitch-font mb-4 border-b-2 border-green-500 pb-2">Menu [RECOMPILING...]</h2>
-                    <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                        <!-- Dynamic menu cards will be injected here -->
-                    </div>
+                    <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
                 </section>
-
-                <!-- Cart Section -->
                 <aside class="p-6 crt-border flex flex-col">
                     <h2 class="text-4xl glitch-font mb-4 border-b-2 border-green-500 pb-2">Your Order</h2>
                     <div id="cart-items" class="flex-grow space-y-3 overflow-y-auto">
@@ -214,6 +198,25 @@
                     </div>
                 </aside>
             </main>
+
+            <!-- New Comment Section -->
+            <section id="comment-section" class="p-6 crt-border">
+                <h2 class="text-4xl glitch-font mb-4 border-b-2 border-green-500 pb-2">Customer Comments</h2>
+                <div id="comment-list" class="space-y-4 mb-6 max-h-60 overflow-y-auto">
+                    <!-- Comments will be injected here -->
+                </div>
+                <form id="comment-form" class="flex">
+                    <input type="text" id="comment-input" class="flex-1 bg-transparent border border-green-500 rounded-l-md p-2 focus:outline-none" placeholder="Leave a message..." maxlength="100">
+                    <button type="submit" class="glitch-button rounded-r-md px-4 font-bold">Post</button>
+                </form>
+            </section>
+
+            <footer class="p-4 crt-border">
+                <h3 class="text-2xl glitch-font mb-2 text-center">Customer Transmissions</h3>
+                <div id="reviews-ticker">
+                    <p id="reviews-content"></p>
+                </div>
+            </footer>
         </div>
     </section>
 
@@ -241,28 +244,24 @@
         </div>
     </div>
 
-
     <script>
         // --- DATA ---
         const itemNames = ["Quantum Quiche", "Recursive Risotto", "Polymorphic Pudding", "Singularity Smoothie", "Firewall Fries", "Kernel Panic Coffee", "Byte-Sized Baklava", "Heisen-Burger"];
         const itemPrices = [449.99, 699.50, 249.75, 550.00, 199.25, 149.66, 320.00, 599.00];
         const imageSets = [
-            ['https://images.unsplash.com/photo-1525351484163-7529414344d8?w=200&q=80', 'https://images.unsplash.com/photo-1579583764834-1076f700436d?w=200&q=80', 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=200&q=80'],
-            ['https://images.unsplash.com/photo-1595908129324-1a854353a27a?w=200&q=80', 'https://images.unsplash.com/photo-1512058564366-185109098178?w=200&q=80', 'https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?w=200&q=80'],
-            ['https://images.unsplash.com/photo-1610998460391-3a5f0686576b?w=200&q=80', 'https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&q=80', 'https://images.unsplash.com/photo-1627776922185-5b596e47b1d8?w=200&q=80'],
-            ['https://images.unsplash.com/photo-1505252585461-14db0eb44e27?w=200&q=80', 'https://images.unsplash.com/photo-1610970881699-44a5c8a01ecb?w=200&q=80', 'https://images.unsplash.com/photo-1577968897966-3d4325b365d2?w=200&q=80'],
-            ['https://images.unsplash.com/photo-1541592106381-b58e7c342795?w=200&q=80', 'https://images.unsplash.com/photo-1598679253544-2c97429994bd?w=200&q=80', 'https://images.unsplash.com/photo-1570715724233-3f135b9a4484?w=200&q=80'],
-            ['https://images.unsplash.com/photo-1511920183303-5232ed48d550?w=200&q=80', 'https://images.unsplash.com/photo-1557826922-c3f1bda2a86c?w=200&q=80', 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=200&q=80']
+            ['https://images.unsplash.com/photo-1525351484163-7529414344d8?w=200&q=80', 'https://images.unsplash.com/photo-1579583764834-1076f700436d?w=200&q=80'],
+            ['https://images.unsplash.com/photo-1595908129324-1a854353a27a?w=200&q=80', 'https://images.unsplash.com/photo-1512058564366-185109098178?w=200&q=80'],
+            ['https://images.unsplash.com/photo-1610998460391-3a5f0686576b?w=200&q=80', 'https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&q=80'],
+            ['https://images.unsplash.com/photo-1505252585461-14db0eb44e27?w=200&q=80', 'https://images.unsplash.com/photo-1610970881699-44a5c8a01ecb?w=200&q=80'],
+            ['https://images.unsplash.com/photo-1541592106381-b58e7c342795?w=200&q=80', 'https://images.unsplash.com/photo-1598679253544-2c97429994bd?w=200&q=80'],
+            ['https://images.unsplash.com/photo-1511920183303-5232ed48d550?w=200&q=80', 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=200&q=80']
         ];
-        const botResponses = [
-            "Anomaly detected. Recalibrating flavor matrix. Please enjoy your assigned nutrients.",
-            "ERROR 418: I'm a teapot. System rebooting... Welcome to the Glitch Café.",
-            "The customer is a variable. The coffee is a constant.",
-            "Your query has been logged and will be processed in 3.. 2.. 1.. [CONNECTION TERMINATED]",
-            "Did you try turning it off and on again? The universe, I mean.",
-            "Please hold. Your reality is important to us.",
-            "That's not a bug, it's a feature. You're welcome.",
-            "All your base are belong to us. And so is your coffee."
+        const botResponses = [ "Anomaly detected. Recalibrating flavor matrix...", "ERROR 418: I'm a teapot.", "The customer is a variable. The coffee is a constant.", "[CONNECTION TERMINATED]", "Did you try turning it off and on again? The universe, I mean.", "Please hold. Your reality is important to us.", "That's not a bug, it's a feature.", "All your base are belong to us." ];
+        const reviews = [ "5 Stars: The coffee stared back at me. It knew my name. Highly recommend.", "1 Star: My waiter kept clipping through the wall and my fork returned a '404 Not Found' error.", "?? Stars: I don't remember ordering, but I've been here for three days. The risotto is infinite.", "10/10: Tasted like static and forgotten memories.", "WARNING: Do not ask for the Wi-Fi password. Trust me." ];
+        let comments = [
+            { user: "User_404", text: "I think I left my wallet here yesterday. And my sense of self." },
+            { user: "Glitch_Fan", text: "The coffee here is great! It tastes like purple." },
+            { user: "Anonymous", text: "Help. I am trapped in the coffee machine." }
         ];
 
         let currentMenuItems = [];
@@ -286,6 +285,10 @@
         const chatMessages = document.getElementById('chat-messages');
         const chatInput = document.getElementById('chat-input');
         const chatSendButton = document.getElementById('chat-send');
+        const reviewsContent = document.getElementById('reviews-content');
+        const commentList = document.getElementById('comment-list');
+        const commentForm = document.getElementById('comment-form');
+        const commentInput = document.getElementById('comment-input');
 
         // --- FUNCTIONS ---
         const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -293,23 +296,19 @@
         function enterCafe() {
             homePage.classList.add('hidden');
             cafePage.classList.remove('hidden');
-            
-            // Initialize cafe functions only after entering
             glitchAndRenderMenu();
             renderCart();
-            menuInterval = setInterval(glitchAndRenderMenu, 2500);
+            initReviews();
+            renderComments();
+            menuInterval = setInterval(glitchAndRenderMenu, 3000);
             addChatMessage("Welcome to the Glitch Café. How may I... assist you?", "bot");
         }
 
         function glitchAndRenderMenu() {
             currentMenuItems = [];
+            const specialIndex = Math.floor(Math.random() * 6);
             for (let i = 0; i < 6; i++) {
-                currentMenuItems.push({
-                    id: i,
-                    name: getRandom(itemNames),
-                    price: getRandom(itemPrices),
-                    images: getRandom(imageSets)
-                });
+                currentMenuItems.push({ id: i, name: getRandom(itemNames), price: getRandom(itemPrices), images: getRandom(imageSets), isSpecial: i === specialIndex });
             }
             renderMenu();
         }
@@ -319,15 +318,29 @@
             currentMenuItems.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'menu-card crt-border p-4 flex flex-col';
+                
+                const buttonHTML = item.isSpecial 
+                    ? `<button class="glitch-button special font-bold py-1 px-3 rounded">Order Now</button>`
+                    : `<button class="glitch-button font-bold py-1 px-3 rounded">Add</button>`;
+
+                const nameHTML = item.isSpecial
+                    ? `<h3 class="text-2xl glitch-font text-red-500 flex-grow">[DAILY SPECIAL]</h3>`
+                    : `<h3 class="text-2xl glitch-font text-cyan-400 flex-grow">${item.name}</h3>`;
+
                 card.innerHTML = `
                     <img id="img-${item.id}" src="${getRandom(item.images)}" alt="${item.name}" class="w-full h-40 object-cover rounded mb-4" onerror="this.onerror=null;this.src='https://placehold.co/200x150/ff0000/ffffff?text=IMG_ERR';">
-                    <h3 class="text-2xl glitch-font text-cyan-400 flex-grow">${item.name}</h3>
+                    ${nameHTML}
                     <div class="flex justify-between items-center mt-4">
                         <p class="text-xl font-bold">₹${item.price.toFixed(2)}</p>
-                        <button class="glitch-button font-bold py-1 px-3 rounded">Add</button>
+                        ${buttonHTML}
                     </div>
                 `;
-                card.querySelector('button').addEventListener('click', () => addToCart(item));
+                
+                if (item.isSpecial) {
+                    card.querySelector('button').addEventListener('click', triggerPageGlitch);
+                } else {
+                    card.querySelector('button').addEventListener('click', () => addToCart(item));
+                }
                 menuGrid.appendChild(card);
             });
         }
@@ -378,24 +391,81 @@
             modal.style.display = 'flex';
         }
 
-        // --- CHATBOT FUNCTIONS ---
-        function toggleChat() {
-            if (chatWindow.style.display === 'flex') {
-                chatWindow.style.display = 'none';
-            } else {
-                chatWindow.style.display = 'flex';
+        function triggerPageGlitch() {
+            const glitches = ['flip', 'invert', 'scramble'];
+            const chosenGlitch = getRandom(glitches);
+            const body = document.body;
+
+            body.classList.add(`page-${chosenGlitch}`);
+            
+            if (chosenGlitch === 'scramble') {
+                scrambleAllText(true);
             }
+
+            setTimeout(() => {
+                body.classList.remove(`page-${chosenGlitch}`);
+                if (chosenGlitch === 'scramble') {
+                    scrambleAllText(false);
+                }
+            }, 3000);
+        }
+
+        function scrambleAllText(shouldScramble) {
+            const elements = document.querySelectorAll('#cafe-page h1, #cafe-page p, #cafe-page h2, #cafe-page h3, #cafe-page span, #cafe-page button');
+            elements.forEach(el => {
+                if (shouldScramble) {
+                    if (!el.dataset.originalText) {
+                        el.dataset.originalText = el.textContent;
+                    }
+                    el.textContent = el.textContent.split('').map(char => ' ?!*#@$%&'.includes(char) ? char : String.fromCharCode(Math.random() * (126 - 33) + 33)).join('');
+                } else {
+                    if (el.dataset.originalText) {
+                        el.textContent = el.dataset.originalText;
+                    }
+                }
+            });
+        }
+
+        function initReviews() {
+            let fullReviewText = "";
+            for (let i=0; i<3; i++) {
+                fullReviewText += reviews.join(" // ");
+            }
+            reviewsContent.textContent = fullReviewText;
+        }
+
+        // --- New Comment Functions ---
+        function renderComments() {
+            commentList.innerHTML = '';
+            comments.forEach(comment => {
+                const commentEl = document.createElement('div');
+                commentEl.className = 'bg-black/20 p-3 rounded';
+                commentEl.innerHTML = `<p><strong class="text-cyan-400">${comment.user}:</strong> ${comment.text}</p>`;
+                commentList.appendChild(commentEl);
+            });
+            commentList.scrollTop = commentList.scrollHeight;
+        }
+
+        function handleCommentSubmit(e) {
+            e.preventDefault();
+            const commentText = commentInput.value.trim();
+            if (commentText) {
+                comments.push({ user: `User_${Math.floor(Math.random() * 900) + 100}`, text: commentText });
+                commentInput.value = '';
+                renderComments();
+            }
+        }
+
+        function toggleChat() {
+            chatWindow.style.display = (chatWindow.style.display === 'flex') ? 'none' : 'flex';
         }
 
         function sendMessage() {
             const input = chatInput.value.trim();
             if (input === '') return;
-
             addChatMessage(input, 'user');
             chatInput.value = '';
-
             addChatMessage('...', 'bot');
-
             setTimeout(() => {
                 const botMessage = getRandom(botResponses);
                 chatMessages.removeChild(chatMessages.lastChild); 
@@ -411,7 +481,7 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        // --- EVENT LISTENERS & INTERVALS ---
+        // --- EVENT LISTENERS ---
         enterCafeButton.addEventListener('click', enterCafe);
         checkoutButton.addEventListener('click', handleCheckout);
         closeModalButton.addEventListener('click', () => {
@@ -421,9 +491,8 @@
         });
         chatIcon.addEventListener('click', toggleChat);
         chatSendButton.addEventListener('click', sendMessage);
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
-        });
+        chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+        commentForm.addEventListener('submit', handleCommentSubmit);
 
     </script>
 </body>
